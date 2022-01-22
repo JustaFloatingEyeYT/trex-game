@@ -10,6 +10,12 @@ var obstacleImage4;
 var obstacleImage5;
 var obstacleImage6;
 var score = 0;
+var play = 1;
+var end = 0;
+var gamestate = play;
+var cloudGroup,obstacleGroup;
+var gameOver,gameOverImage;
+var restart,restartImage;
 
 //Predifined function used to load things
 function preload(){
@@ -22,6 +28,8 @@ function preload(){
   obstacleImage4 = loadImage("obstacle4.png");
   obstacleImage5 = loadImage("obstacle5.png");
   obstacleImage6 = loadImage("obstacle6.png");
+  gameOverImage = loadImage("gameOver.png");
+  restartImage = loadImage("restart.png");
 }
 
 //To create things, only happens once
@@ -42,6 +50,18 @@ function setup(){
   groundColliding = createSprite(300,189,600,10);
   groundColliding.visible = false
 
+  //objectname = new Class();
+  obstacleGroup = new Group();
+  cloudGroup = new Group();
+
+  //Create Game Over sprites
+  gameOver = createSprite(300,100,2,2);
+  gameOver.addImage(gameOverImage);
+  restart = createSprite(300,150,2,2);
+  restart.addImage(restartImage);
+  gameOver.scale = 0.5
+  restart.scale = 0.3
+
 }
 
 //Does things for every frame
@@ -49,24 +69,47 @@ function draw(){
   //Changes the backround and stops duplicating sprites when they move
   background("white");
 
+  if(gamestate === play){
+    score = Math.round(frameCount / 4);
+
+    if(keyDown("space") && trex.collide(ground)){
+      trex.velocityY = -16;
+    }
+
+    //Adding gravity
+    trex.velocityY += 1.60;
+
+    //Stopping the trex from falling out of the game
+    trex.collide(groundColliding)
+
+    //Making the ground infinite
+    if(ground.x < 0){
+      ground.x = 1100;
+    }
+
+    restart.visible = false;
+    gameOver.visible = false;
+
+    if(trex.isTouching(obstacleGroup)){
+      gamestate = end;
+    }
+
+    obstacleSpawn();
+    spawnClouds();
+  }
+  else if(gamestate === end){
+    trex.velocityX = 0;
+    trex.velocityY = 0;
+    cloudGroup.setVelocityXEach(0)
+    ground.velocityX = 0;
+    obstacleGroup.setVelocityXEach(0)
+    restart.visible = true;
+    gameOver.visible = true;
+    
+  }
+
   text("Score: " + score, 10, 15);
-  score = Math.round(frameCount / 4);
-  if(keyDown("space") && trex.collide(ground)){
-    trex.velocityY = -16;
-  }
-  //Adding gravity
-  trex.velocityY += 1.60;
 
-  //Stopping the trex from falling out of the game
-  trex.collide(groundColliding)
-
-  //Making the ground infinite
-  if(ground.x < 0){
-    ground.x = 1100;
-  }
-
-  obstacleSpawn();
-  spawnClouds();
   drawSprites();
 
 }
@@ -79,6 +122,7 @@ function spawnClouds(){
     cloud.y = Math.round(random(0,100))
     trex.depth = cloud.depth;
     cloud.lifetime = 140;
+    cloudGroup.add(cloud);
   }
 }
 
@@ -104,5 +148,6 @@ function obstacleSpawn(){
       default: break;
     }
     obstacle.scale = 0.5;
+    obstacleGroup.add(obstacle);
   }
 }
