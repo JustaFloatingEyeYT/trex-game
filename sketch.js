@@ -30,6 +30,7 @@ function preload(){
   obstacleImage6 = loadImage("obstacle6.png");
   gameOverImage = loadImage("gameOver.png");
   restartImage = loadImage("restart.png");
+  trex_end = loadAnimation("trex_collided.png");
 }
 
 //To create things, only happens once
@@ -43,7 +44,9 @@ function setup(){
 
   //create a trex sprite
   trex = createSprite(50,160);
+  trex.setCollider("rectangle",0,0,150,100);
   trex.addAnimation("running",trex_running);
+  trex.addAnimation("end",trex_end);
   trex.scale = 0.5;
 
   //Creating invisible ground
@@ -90,22 +93,28 @@ function draw(){
     restart.visible = false;
     gameOver.visible = false;
 
+    obstacleSpawn();
+    spawnClouds();
+
     if(trex.isTouching(obstacleGroup)){
       gamestate = end;
     }
 
-    obstacleSpawn();
-    spawnClouds();
   }
   else if(gamestate === end){
     trex.velocityX = 0;
     trex.velocityY = 0;
-    cloudGroup.setVelocityXEach(0)
     ground.velocityX = 0;
-    obstacleGroup.setVelocityXEach(0)
+    cloudGroup.setVelocityXEach(0);
+    obstacleGroup.setVelocityXEach(0);
+
+    cloudGroup.setLifetimeEach(-1);
+    obstacleGroup.setLifetimeEach(-1);
+
+    trex.changeAnimation("end",trex_end);
+
     restart.visible = true;
     gameOver.visible = true;
-    
   }
 
   text("Score: " + score, 10, 15);
@@ -121,6 +130,7 @@ function spawnClouds(){
     cloud.velocityX = -5
     cloud.y = Math.round(random(0,100))
     trex.depth = cloud.depth;
+    //Time = distance / speed
     cloud.lifetime = 140;
     cloudGroup.add(cloud);
   }
