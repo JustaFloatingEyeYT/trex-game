@@ -16,6 +16,9 @@ var gamestate = play;
 var cloudGroup,obstacleGroup;
 var gameOver,gameOverImage;
 var restart,restartImage;
+var jumpSound;
+var deathSound;
+var checkpointSound;
 
 //Predifined function used to load things
 function preload(){
@@ -31,6 +34,9 @@ function preload(){
   gameOverImage = loadImage("gameOver.png");
   restartImage = loadImage("restart.png");
   trex_end = loadAnimation("trex_collided.png");
+  jumpSound = loadSound("jump.mp3");
+  deathSound = loadSound("die.mp3");
+  checkpointSound = loadSound("checkpoint.mp3");
 }
 
 //To create things, only happens once
@@ -44,7 +50,8 @@ function setup(){
 
   //create a trex sprite
   trex = createSprite(50,160);
-  trex.setCollider("rectangle",0,0,150,100);
+  // trex.setCollider("circle",0,0,35);
+  trex.setCollider("rectangle",0,0,120,trex.height)
   trex.addAnimation("running",trex_running);
   trex.addAnimation("end",trex_end);
   trex.scale = 0.5;
@@ -74,9 +81,13 @@ function draw(){
 
   if(gamestate === play){
     score = Math.round(frameCount / 4);
+    if(score % 100 == 0 && score >= 100){
+      checkpointSound.play();
+    }
 
     if(keyDown("space") && trex.collide(ground)){
       trex.velocityY = -16;
+      jumpSound.play();
     }
 
     //Adding gravity
@@ -97,7 +108,10 @@ function draw(){
     spawnClouds();
 
     if(trex.isTouching(obstacleGroup)){
-      gamestate = end;
+      // gamestate = end;
+      // deathSound.play();
+      jumpSound.play();
+      trex.velocityY =- 12;
     }
 
   }
