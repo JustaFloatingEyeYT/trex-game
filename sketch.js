@@ -82,9 +82,15 @@ function draw(){
     score = score + Math.round(getFrameRate() / 50);
     if(score % 500 == 0 && score >= 100){
       checkpointSound.play();
+      
+      // Try to make the game go quicker at some point
+      
+      // obstacleGroup.setVelocityXEach += 1
+      // cloudGroup.setVelocityXEach += 1
+      // ground.velocityX += 1
     }
 
-    if(keyDown("space") && trex.collide(ground)){
+    if((keyDown("space") || keyDown("UP_ARROW")) && trex.collide(ground)){
       trex.velocityY = -16;
       jumpSound.play();
     }
