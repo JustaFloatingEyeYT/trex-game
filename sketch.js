@@ -94,21 +94,11 @@ function draw(){
       trex.velocityY = -16;
       jumpSound.play();
     }
-
     if(keyDown("RIGHT_ARROW") || keyDown(68)){
-      trex.velocityX = 3;
+      trex.x = trex.x += 5;
     }
-    // Need to figure out a way to make this work
-    if(("RIGHT_ARROW").keyUp || (68).keyUp){
-      trex.velocityX = 0;
-    }
-    
     if(keyDown("LEFT_ARROW") || keyDown(65)){
-      trex.velocityX = -3;
-    }
-    // Need to figure out a way to make this work
-    if(("LEFT_ARROW").keyUp || (65).keyUp){
-      trex.velocityX = 0;
+      trex.x = trex.x -= 5;
     }
     
     //Adding gravity
