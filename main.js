@@ -143,7 +143,7 @@ function draw(){
     restart.visible = true;
     gameOver.visible = true;
 
-    if(mousePressedOver(restart)){
+    if(mousePressedOver(restart) || keyDown("space") || keyDown("UP_ARROW") || keyDown(87)){
       reset();
     }
   }
