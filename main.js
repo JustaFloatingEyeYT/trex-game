@@ -19,6 +19,7 @@ var restart,restartImage;
 var jumpSound;
 var deathSound;
 var checkpointSound;
+var speedIncrease;
 
 //Predifined function used to load things
 function preload(){
@@ -80,15 +81,18 @@ function draw(){
 
   if(gamestate === play){
     score = score + Math.round(getFrameRate() / 50);
-    if(score % 500 == 0 && score >= 100){
+    if(score % 500 == 0 && score >= 500){
       checkpointSound.play();
-      
-      // Try to make the game go quicker at some point
-      
-      // obstacleGroup.setVelocityXEach += 1
-      // cloudGroup.setVelocityXEach += 1
-      // ground.velocityX += 1
     }
+
+    // Fix this code for making the game get faster over time
+
+    // speedIncrease = Math.round(score / 1000);
+    // if(speedIncrease == 1 || speedIncrease > 1){
+    //   obstacleGroup.setVelocityXEach(obstacleGroup.velocityXEach -= speedIncrease);
+    //   cloudGroup.setVelocityXEach(cloudGroup.velocityXEach -= speedIncrease);
+    //   ground.velocityX = (ground.velocityX -= speedIncrease);
+    // }
 
     if((keyDown("space") || keyDown("UP_ARROW") || keyDown(87)) && trex.collide(ground)){
       trex.velocityY = -16;
@@ -99,6 +103,13 @@ function draw(){
     }
     if(keyDown("LEFT_ARROW") || keyDown(65)){
       trex.x = trex.x -= 5;
+    }
+
+    if(trex.x > 550){
+      trex.x = 550
+    }
+    if(trex.x < 50){
+      trex.x = 50
     }
     
     //Adding gravity
@@ -121,8 +132,6 @@ function draw(){
     if(trex.isTouching(obstacleGroup)){
       gamestate = end;
       deathSound.play();
-      // jumpSound.play();
-      // trex.velocityY =- 12;
     }
 
     ground.velocityX = -10;
